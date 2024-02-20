@@ -60,3 +60,11 @@ export const updateAuthor = async (author: Omit<Author, "id">, id: string): Prom
         },
     });
 };
+
+export const deleteAuthor = async(id: string): Promise<void> => {
+    await db.author.delete({
+        where: {
+            id,
+        },
+    });
+};
