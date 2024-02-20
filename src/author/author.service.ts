@@ -12,6 +12,14 @@ export const listAuthors = async (): Promise<Author[]> => {
             id: true,
             firstName: true,
             lastName: true,
-        }
-    })
+        },
+    });
+};
+
+export const getAuthor = async (id: string): Promise<Author | null> => {
+    return db.author.findUnique({
+        where: {
+            id,
+        },
+    });
 }
