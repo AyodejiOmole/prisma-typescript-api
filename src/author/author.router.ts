@@ -1,11 +1,9 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-
 import * as AuthorService from "./author.service";
 
 export const authorRouter = express.Router();
-
 
 // GET all authors on the database
 authorRouter.get("/", async (request: Request, response: Response) => {
@@ -31,3 +29,27 @@ authorRouter.get("/:id", async (request: Request, response: Response) => {
         return response.status(500).json(error.message);
     }
 });
+
+//POST: Create an author
+// Params: firstName, lastName
+authorRouter.post(
+    "/", 
+    body("firstName").isString(), 
+    body("lastName").isString(), 
+    async (request: Request, response: Response) => {
+        const erros = validationResult(request);
+        if(!erros.isEmpty()) {
+            return response.status(400).json({ errors: erros.array()});
+        }
+
+        try {
+            const author = request.body;
+            const newAuthor = await AuthorService.createAuthor(author);
+            return response.status(201).json(newAuthor);
+        } catch(error: any) {
+            return response.status(500).json(error.message);
+        }
+});
+
+// Update the details a specific author on the database
+// authorRouter.put("/id", async)
