@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import * as AuthorService from "./author.service";
+import { getAuthor } from "../controllers/author.controller";
 
 export const authorRouter = express.Router();
 
@@ -15,20 +16,22 @@ authorRouter.get("/", async (request: Request, response: Response) => {
     }
 });
 
-// GET a specific author on the database
-authorRouter.get("/:id", async (request: Request, response: Response) => {
-    const id: string = request.params.id;
-    try {
-        const author = await AuthorService.getAuthor(id);
-        if(author) {
-            return response.status(200).json(author);
-        }
+// // GET a specific author on the database
+// authorRouter.get("/:id", async (request: Request, response: Response) => {
+//     const id: string = request.params.id;
+//     try {
+//         const author = await AuthorService.getAuthor(id);
+//         if(author) {
+//             return response.status(200).json(author);
+//         }
 
-        return response.status(404).json("Author could not be found!");
-    } catch (error: any) {
-        return response.status(500).json(error.message);
-    }
-});
+//         return response.status(404).json("Author could not be found!");
+//     } catch (error: any) {
+//         return response.status(500).json(error.message);
+//     }
+// });
+
+authorRouter.get("/:id", getAuthor)
 
 //POST: Create an author
 // Params: firstName, lastName
@@ -39,7 +42,7 @@ authorRouter.post(
     async (request: Request, response: Response) => {
         const erros = validationResult(request);
         if(!erros.isEmpty()) {
-            return response.status(400).json({ errors: erros.array()});
+            return response.status(400).json({ errors: erros.array() });
         }
 
         try {
