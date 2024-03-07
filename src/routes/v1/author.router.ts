@@ -1,8 +1,8 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import * as AuthorService from "./author.service";
-import { getAuthor } from "../controllers/author.controller";
+import * as AuthorService from "../../services/author.service";
+import { getAuthor } from "../../controllers/author.controller";
 
 export const authorRouter = express.Router();
 

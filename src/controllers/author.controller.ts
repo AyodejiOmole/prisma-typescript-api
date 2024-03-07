@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import * as AuthorService from "../author/author.service";
+import * as AuthorService from "../services/author.service";
 
 export const getAuthor = async (request: Request, response: Response) => {
     const id: string = request.params.id;
