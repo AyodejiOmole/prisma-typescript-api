@@ -54,5 +54,40 @@ authorRouter.post(
         }
 });
 
-// Update the details a specific author on the database
-// authorRouter.put("/id", async)
+// PUT: Update the details a specific author on the database
+// Params: id (of the author to be updated)
+// Body: firstName, lastName 
+authorRouter.put("/:id", 
+    body("firstName").isString(), 
+    body("lastName").isString(), 
+    async (request: Request, response: Response) => {
+        const errors = validationResult(request);
+        if(!errors.isEmpty()) {
+            return response.status(400).json({ errors: errors.array() });
+        };
+
+        const id: string = request.params.id;
+
+        try {
+            const author = request.body;
+            const updatedAuthor = await AuthorService.updateAuthor(author, id);
+            
+            return response.status(200).json(updatedAuthor);
+        } catch(error) {
+            return response.status(500).json(error.message);
+        };
+});
+
+
+// DELETE: Delete all details of a specific user from the database
+// Params: id (of the author to be deleted)
+authorRouter.delete("/:id", async (request: Request, response: Response) => {
+    const id: string = request.params.id;
+
+    try {
+        await AuthorService.deleteAuthor(id);
+        return response.status(204).json("Author has been succesfully deleted!");
+    } catch (error) {
+        return response.status(500).json(error.message);
+    }; 
+});
