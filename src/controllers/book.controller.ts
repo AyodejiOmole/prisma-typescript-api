@@ -76,3 +76,44 @@ export const updateBook = async (req: Request, res: Response) => {
         return res.status(500).json(error.message);
     };
 };
+
+// POST: Create an author
+// Body: title, isFiction, datePublished, authorId
+export const createBook = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const book = req.body;
+    try {
+        const createdBook = await BookService.createBook(book);
+
+        if(!createdBook) {
+            return res.status(400).json({
+                status: 400,
+                message: "Could not create your book."
+            });
+        };
+
+        return res.status(201).json({
+            status: 200,
+            message: "Book has been created.",
+            data: createdBook,
+        });
+
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+};
+
+export const deleteBook = async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    try {
+        await BookService.deleteAuthor(id);
+        return res.status(204).json("Book has been deleted!");
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }; 
+}

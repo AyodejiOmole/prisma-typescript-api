@@ -1,7 +1,6 @@
 import express from "express";
-import { db } from "../../utils/db.server";
 import { body } from "express-validator";
-import { getBooks, getBook, updateBook } from "../../controllers/book.controller";
+import { getBooks, getBook, updateBook, createBook, deleteBook } from "../../controllers/book.controller";
 
 export const bookRouter = express.Router();
 
@@ -16,4 +15,15 @@ bookRouter.put(
     body("isFiction").isBoolean(),
     updateBook,
 );
+
+bookRouter.post(
+    "/",
+    body("title").isString(), 
+    body("datePublished").isDate(), 
+    body("isFiction").isBoolean(),
+    body("authorId").isString(),
+    createBook,
+);
+
+bookRouter.delete("/:id", deleteBook);
 
