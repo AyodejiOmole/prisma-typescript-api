@@ -1,7 +1,8 @@
 import { Response, Request } from "express";
 import * as BookService from "../services/book.service";
+import { validationResult } from "express-validator";
 
-// GET all books on the database
+// GET all books on the database.
 export const getBooks = async (req: Request, res: Response) => {
     try {
         const books = await BookService.listBooks();
@@ -15,10 +16,11 @@ export const getBooks = async (req: Request, res: Response) => {
         }
 
     } catch(error: any) {
-        return res.status(500).json("Could not retrieve books.");
+        return res.status(500).json(error.message);
     };
 };
 
+// GET a specific book from the database using its id.
 export const getBook = async (req: Request, res: Response) => {
     const id: string = req.params.id;
 
@@ -31,7 +33,7 @@ export const getBook = async (req: Request, res: Response) => {
                 message: "Could not find book.",
             });
         };
-        
+
         return res.status(200).json({
             status: 200,
             message: "Book retrieved!",
@@ -39,6 +41,38 @@ export const getBook = async (req: Request, res: Response) => {
         });
 
     } catch (error: any) {
-        return res.status(500).json("Author could not be found");
+        return res.status(500).json(error.message);
     }
+};
+
+// PUT: Update the details a specific author on the database
+// Params: id (of the author to be updated)
+// Body: title, isFiction, datePublished
+export const updateBook = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id: string = req.params.id;
+    const book = req.body;
+
+    try {
+        const updatedBook = await BookService.updateBook(book, id);
+
+        if(!updatedBook) {
+            return res.status(400).json({
+                status: 400,
+                message: "Could not update book."
+            });
+        };
+
+        return res.status(200).json({
+            status: 200,
+            message: "Book updated.",
+            data: updatedBook,
+        });
+    } catch (error) {
+        return res.status(500).json(error.message);
+    };
 };
