@@ -13,7 +13,7 @@ authorRouter.get("/", async (request: Request, response: Response) => {
         return response.status(200).json(authors);
     } catch (error: any) {
         return response.status(500).json(error.message);
-    }
+    };
 });
 
 // // GET a specific author on the database
@@ -77,7 +77,6 @@ authorRouter.put("/:id",
             return response.status(500).json(error.message);
         };
 });
-
 
 // DELETE: Delete all details of a specific user from the database
 // Params: id (of the author to be deleted)
